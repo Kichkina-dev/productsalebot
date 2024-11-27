@@ -1,54 +1,135 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Mahsulotlar</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Selection</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        .product { margin-bottom: 20px; }
-        button { background-color: #4CAF50; color: white; border: none; padding: 10px; cursor: pointer; }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        .product-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin: 10px;
+            width: 250px;
+            text-align: center;
+        }
+        .product-image {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+        .product-name {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .product-price {
+            font-size: 16px;
+            color: #ff5722;
+        }
+        .add-to-cart {
+            background-color: #4caf50;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .add-to-cart:hover {
+            background-color: #45a049;
+        }
+        .cart-summary {
+            margin-top: 20px;
+            background-color: white;
+            padding: 15px;
+            width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 10px 0;
+        }
     </style>
 </head>
 <body>
-    <h1>Mahsulotlar katalogi</h1>
-    <div id="products">
-        <div class="product">
-            <h2>Mahsulot 1</h2>
-            <p>Narxi: 10 000 so'm</p>
-            <button onclick="addToCart('Mahsulot 1', 10000)">Savatchaga qo'shish</button>
-        </div>
-        <div class="product">
-            <h2>Mahsulot 2</h2>
-            <p>Narxi: 20 000 so'm</p>
-            <button onclick="addToCart('Mahsulot 2', 20000)">Savatchaga qo'shish</button>
-        </div>
+    <h1>Mahsulotlarni tanlang</h1>
+
+    <div id="product-list">
+        <!-- Mahsulotlar ro'yxati dynamically yuboriladi -->
     </div>
-    <button onclick="checkout()">Buyurtma berish</button>
+
+    <div id="cart-summary" class="cart-summary">
+        <h3>Savatdagi mahsulotlar</h3>
+        <ul id="cart-items">
+            <!-- Savatdagi mahsulotlar dynamically qo'shiladi -->
+        </ul>
+        <div id="total-price">Umumiy narx: 0</div>
+        <button id="checkout" class="add-to-cart">Buyurtma berish</button>
+    </div>
 
     <script>
-        const cart = [];
-        function addToCart(productName, price) {
-            cart.push({ name: productName, price });
-            alert(`${productName} savatchaga qo'shildi!`);
+        const products = [
+            {id: 1, name: "Mahsulot 1", price: 100, image: "https://via.placeholder.com/200"},
+            {id: 2, name: "Mahsulot 2", price: 150, image: "https://via.placeholder.com/200"},
+            {id: 3, name: "Mahsulot 3", price: 200, image: "https://via.placeholder.com/200"}
+        ];
+        
+        let cart = [];
+
+        function updateCart() {
+            const cartItemsContainer = document.getElementById('cart-items');
+            cartItemsContainer.innerHTML = '';
+            let total = 0;
+
+            cart.forEach(item => {
+                const li = document.createElement('li');
+                li.classList.add('cart-item');
+                li.innerHTML = `${item.name} - ${item.price} so'm`;
+                cartItemsContainer.appendChild(li);
+                total += item.price;
+            });
+
+            document.getElementById('total-price').innerText = `Umumiy narx: ${total} so'm`;
         }
 
-        function checkout() {
-            alert(`Buyurtma: ${JSON.stringify(cart)}`);
-            Telegram.WebApp.close(); // WebApp-ni yopadi
+        function addToCart(product) {
+            cart.push(product);
+            updateCart();
         }
+
+        function displayProducts() {
+            const productList = document.getElementById('product-list');
+            products.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.classList.add('product-card');
+                productCard.innerHTML = `
+                    <img src="${product.image}" alt="${product.name}" class="product-image">
+                    <div class="product-name">${product.name}</div>
+                    <div class="product-price">${product.price} so'm</div>
+                    <button class="add-to-cart" onclick="addToCart({id: ${product.id}, name: '${product.name}', price: ${product.price}})">Savatga qo'shish</button>
+                `;
+                productList.appendChild(productCard);
+            });
+        }
+
+        document.getElementById('checkout').addEventListener('click', () => {
+            alert('Buyurtma berildi');
+            // Telegram botga buyurtma yuborish uchun request yuborish
+        });
+
+        // Mahsulotlarni ko'rsatish
+        displayProducts();
     </script>
-    <script>
-        Telegram.WebApp.ready();
-    
-        // Telegramdan foydalanuvchi ma'lumotlarini oling
-        const user = Telegram.WebApp.initDataUnsafe.user;
-        console.log("Foydalanuvchi:", user);
-    
-        // WebApp yopilganda buyurtma ma'lumotlarini qayta ishlash
-        function checkout() {
-            const cart = JSON.stringify([{ name: "Mahsulot 1", price: 10000 }]);
-            Telegram.WebApp.sendData(cart); // Botga ma'lumot yuboradi
-            Telegram.WebApp.close();
-        }
-    </script>    
 </body>
 </html>
