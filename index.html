@@ -36,5 +36,19 @@
             Telegram.WebApp.close(); // WebApp-ni yopadi
         }
     </script>
+    <script>
+        Telegram.WebApp.ready();
+    
+        // Telegramdan foydalanuvchi ma'lumotlarini oling
+        const user = Telegram.WebApp.initDataUnsafe.user;
+        console.log("Foydalanuvchi:", user);
+    
+        // WebApp yopilganda buyurtma ma'lumotlarini qayta ishlash
+        function checkout() {
+            const cart = JSON.stringify([{ name: "Mahsulot 1", price: 10000 }]);
+            Telegram.WebApp.sendData(cart); // Botga ma'lumot yuboradi
+            Telegram.WebApp.close();
+        }
+    </script>    
 </body>
 </html>
