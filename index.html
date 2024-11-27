@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mahsulotlar</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .product { margin-bottom: 20px; }
+        button { background-color: #4CAF50; color: white; border: none; padding: 10px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>Mahsulotlar katalogi</h1>
+    <div id="products">
+        <div class="product">
+            <h2>Mahsulot 1</h2>
+            <p>Narxi: 10 000 so'm</p>
+            <button onclick="addToCart('Mahsulot 1', 10000)">Savatchaga qo'shish</button>
+        </div>
+        <div class="product">
+            <h2>Mahsulot 2</h2>
+            <p>Narxi: 20 000 so'm</p>
+            <button onclick="addToCart('Mahsulot 2', 20000)">Savatchaga qo'shish</button>
+        </div>
+    </div>
+    <button onclick="checkout()">Buyurtma berish</button>
+
+    <script>
+        const cart = [];
+        function addToCart(productName, price) {
+            cart.push({ name: productName, price });
+            alert(`${productName} savatchaga qo'shildi!`);
+        }
+
+        function checkout() {
+            alert(`Buyurtma: ${JSON.stringify(cart)}`);
+            Telegram.WebApp.close(); // WebApp-ni yopadi
+        }
+    </script>
+</body>
+</html>
